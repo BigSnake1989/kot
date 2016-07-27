@@ -12,14 +12,17 @@ import org.thymeleaf.templatemode.TemplateMode
 fun renderPage(r: Router) {
     val engine = ThymeleafTemplateEngine.create().setMode(TemplateMode.HTML)
     r.route("/static/*").handler(StaticHandler.create("static").setCachingEnabled(false))
-    r.get("/index.html").handler({ c ->
-        c.put("welcome", "hello world,page !!??!!")
-        render(c,engine,"templates/index.html")
-    })
+    r.get("/").handler({ c -> index(c, engine) })
+    r.get("/index.html").handler({ c -> index(c, engine) })
 }
 
-fun render(c: RoutingContext, engine: ThymeleafTemplateEngine, templ:String){
-    engine.render(c,templ,{res->
+fun index(c: RoutingContext, engine: ThymeleafTemplateEngine) {
+    c.put("welcome", "hello world,page !!")
+    render(c, engine, "templates/index.html")
+}
+
+fun render(c: RoutingContext, engine: ThymeleafTemplateEngine, templ: String) {
+    engine.render(c, templ, { res ->
         if (res.succeeded()) {
             c.response().end(res.result())
         } else {
