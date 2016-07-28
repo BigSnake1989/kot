@@ -5,11 +5,20 @@ import io.vertx.core.json.JsonObject
 import io.vertx.ext.jdbc.JDBCClient
 import io.vertx.ext.unit.TestContext
 import io.vertx.ext.unit.junit.VertxUnitRunner
+import org.junit.After
 import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(VertxUnitRunner::class)
 class DbTest {
+
+    val client = JDBCClient.createShared(Vertx.vertx(), JsonObject()
+            .put("provider_class","io.vertx.ext.jdbc.spi.impl.HikariCPDataSourceProvider")
+            .put("jdbcUrl", "jdbc:mysql://localhost:3306/kot?useSSL=false")
+            .put("driver_class", "com.mysql.jdbc.Driver")
+            .put("username", "root")
+            .put("password", "123456")
+            .put("max_pool_size", 30))
 
     @Test
     fun test_async(c: TestContext) {
@@ -27,14 +36,6 @@ class DbTest {
     @Test
     fun test_connection(c: TestContext) {
         val async = c.async()
-        val client = JDBCClient.createShared(Vertx.vertx(), JsonObject()
-                .put("provider_class","io.vertx.ext.jdbc.spi.impl.HikariCPDataSourceProvider")
-                .put("jdbcUrl", "jdbc:mysql://localhost:3306/kot?useSSL=false")
-                .put("driver_class", "com.mysql.jdbc.Driver")
-                .put("username", "root")
-                .put("password", "123456")
-                .put("max_pool_size", 30))
-
         println("ready connect...")
         client.getConnection({ conn ->
 
@@ -64,6 +65,18 @@ class DbTest {
                 })
             })
 
+        })
+    }
+
+    @After
+    fun setDown(ctx: TestContext){
+        client.getConnection({conn ->
+            if (conn.succeeded()){
+                val connection = conn.result()
+                connection.execute("drop table tt",{r ->
+                    ctx.assertTrue(r.succeeded())
+                })
+            }
         })
     }
 }
