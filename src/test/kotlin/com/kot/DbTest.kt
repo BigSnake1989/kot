@@ -2,7 +2,7 @@ package com.kot
 
 import io.vertx.core.Vertx
 import io.vertx.core.json.JsonObject
-import io.vertx.ext.asyncsql.MySQLClient
+import io.vertx.ext.jdbc.JDBCClient
 import io.vertx.ext.unit.TestContext
 import io.vertx.ext.unit.junit.VertxUnitRunner
 import org.junit.Test
@@ -27,19 +27,19 @@ class DbTest {
     @Test
     fun test_connection(c: TestContext) {
         val async = c.async()
-        val client = MySQLClient.createShared(Vertx.vertx(), JsonObject()
-                .put("host", "127.0.0.1")
-                .put("port", 3306)
+        val client = JDBCClient.createShared(Vertx.vertx(), JsonObject()
+                .put("provider_class","io.vertx.ext.jdbc.spi.impl.HikariCPDataSourceProvider")
+                .put("jdbcUrl", "jdbc:mysql://localhost:3306/kot?useSSL=false")
+                .put("driver_class", "com.mysql.jdbc.Driver")
                 .put("username", "root")
                 .put("password", "123456")
-                .put("database", "kot"))
+                .put("max_pool_size", 30))
 
         println("ready connect...")
         client.getConnection({ conn ->
 
             if (conn.failed()) {
                 println("connect error :" + conn.cause().message)
-                System.err.println(conn.cause().message)
                 return@getConnection
             }
             println("connect success")
@@ -50,9 +50,17 @@ class DbTest {
                         println("create fail :" + r.cause().message)
                     }
                     c.assertTrue(r.succeeded())
-
+                    connection.execute("insert into tt(id,name) values(1,'haha')",{insert ->
+                        if (insert.failed()){
+                            println("insert :"+ insert.cause().message)
+                        }
+                        c.assertTrue(insert.succeeded())
+                        connection.commit({commit ->
+                            c.assertTrue(commit.succeeded())
+                        })
+                        async.complete()
+                    })
                     println("create success")
-                    async.complete()
                 })
             })
 
