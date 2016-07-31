@@ -1,8 +1,8 @@
 package com.kot
 
 import com.kot.bean.User
-import com.kot.service.IUserService
-import com.kot.service.UserService
+import com.kot.dao.interfaces.IUserService
+import com.kot.dao.UserService
 import io.vertx.core.Vertx
 import io.vertx.core.json.JsonObject
 import io.vertx.ext.jdbc.JDBCClient
@@ -22,11 +22,13 @@ class UserServiceTest{
 
     @Test
     fun testUserAdd(ctx:TestContext){
+        val async = ctx.async()
         val userService = UserService(client)
         val user = User("wang","hahaha")
         val future = userService.addUser(user)
         future.setHandler {
             ctx.assertTrue(it.succeeded(),"增加user失败")
+            async.complete()
         }
     }
 
@@ -38,7 +40,7 @@ class UserServiceTest{
         userFuture.setHandler {
             if (it.succeeded()){
                 val user = it.result()
-                println("user:"+user.toString())
+                println("user info:"+user.toString())
                 ctx.assertNotNull(user,"查询失败")
             }else{
                 print("--------- ERROR ---------")
@@ -49,10 +51,12 @@ class UserServiceTest{
 
     @Test
     fun testUserRm(ctx: TestContext){
+        val async = ctx.async()
         val userService = UserService(client)
         val future = userService.rmUser("wang")
         future.setHandler {
             ctx.assertTrue(it.succeeded(),"删除失败")
+            async.complete()
         }
     }
 

@@ -1,4 +1,4 @@
-package com.kot.service
+package com.kot.dao.interfaces
 
 import com.kot.bean.User
 import io.vertx.core.Future

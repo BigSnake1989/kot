@@ -1,9 +1,10 @@
-package com.kot.service
+package com.kot.dao
 
 import com.kot.bean.User
 import com.kot.common.execute
 import com.kot.common.queryOne
 import com.kot.common.update
+import com.kot.dao.interfaces.IUserService
 import io.vertx.core.Future
 import io.vertx.ext.jdbc.JDBCClient
 
