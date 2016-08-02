@@ -17,7 +17,7 @@ import org.junit.runner.RunWith
  */
 
 @RunWith(VertxUnitRunner::class)
-class UserServiceTest{
+class UserDaoTest {
 
 
     @Test

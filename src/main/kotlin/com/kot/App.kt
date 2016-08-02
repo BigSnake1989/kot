@@ -8,11 +8,11 @@ import io.vertx.core.Vertx
 /**
  * Created by wl on 16/7/22.
  */
-class HelloWorlds : AbstractVerticle() {
+class App : AbstractVerticle() {
 
     companion object {
         @JvmStatic fun main(args: Array<String>) {
-            Vertx.vertx().deployVerticle(HelloWorlds())
+            Vertx.vertx().deployVerticle(App())
         }
     }
 
