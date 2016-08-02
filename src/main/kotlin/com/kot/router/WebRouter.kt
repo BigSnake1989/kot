@@ -19,7 +19,7 @@ fun renderPage(r: Router) {
 
 fun index(c: RoutingContext, engine: ThymeleafTemplateEngine) {
     c.put("welcome", "hello world,page !!")
-    response(c, engine, "templates/index.html")
+    response(c, engine, "templates/home/index.html")
 }
 
 fun response(c: RoutingContext, engine: ThymeleafTemplateEngine, tpl: String) {

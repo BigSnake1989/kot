@@ -12,6 +12,11 @@
         <p th:text="${context.get('welcome')}">Welcome to our grocery store!</p>
     </div>
 </section>
+<section id="test" class="intro-section">
+    <div class="container">
+        <p th:text="${context.get('welcome')}">Welcome to our grocery store!</p>
+    </div>
+</section>
 
 <div th:replace="templates/fragments/footer.html::footer"></div>
 <div th:include="templates/fragments/footer.html::script"></div>
