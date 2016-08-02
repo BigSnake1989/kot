@@ -53,7 +53,7 @@ def mainVerticleName = 'com.kot.HelloWorlds'
 
 // Vert.x watches for file changes in all subdirectories
 // of src/ but only for files with .java extension
-def watchForChange = 'src/**/*.kt'
+def watchForChange = 'src/main/**/*'
 
 // Vert.x will call this task on changes
 def doOnChange = './gradlew classes'

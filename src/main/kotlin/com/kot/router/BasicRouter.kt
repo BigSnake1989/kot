@@ -1,8 +1,9 @@
 package com.kot.router
 
 import com.kot.bean.Entity
+import com.kot.common.html
+import com.kot.common.json
 import io.vertx.core.Vertx
-import io.vertx.core.http.HttpServerResponse
 import io.vertx.core.json.Json
 import io.vertx.ext.web.Router
 
@@ -16,16 +17,4 @@ fun customRouter(v : Vertx) : Router {
     router.route("/json").handler({c -> c.response().json().end(Json.encode(Entity("name","hehe")))})
     router.userRouter(router)
     return router
-}
-
-fun HttpServerResponse.html() : HttpServerResponse {
-    return this.putHeader("content-type","text/html")
-}
-
-fun HttpServerResponse.text():HttpServerResponse{
-    return this.putHeader("content-type","text/plain");
-}
-
-fun HttpServerResponse.json() : HttpServerResponse {
-    return this.putHeader("content-type","application/json; charset=utf-8")
 }

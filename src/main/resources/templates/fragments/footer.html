@@ -1,0 +1,19 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+
+<!-- Footer -->
+<footer th:fragment="footer">
+    <div class="row">
+        <div class="col-lg-12">
+            <p>Copyright &copy; Your Website 2014</p>
+        </div>
+    </div>
+</footer>
+
+<!--Footer Script-->
+<div th:fragment="script">
+    <script src="../../static/bs/js/jquery.js" th:src="@{static/bs/js/jquery.js}"></script>
+    <script src="../../static/bs/js/bootstrap.min.js" th:src="@{static/bs/js/bootstrap.min.js}"></script>
+    <script src="../../static/bs/js/jquery.easing.min.js" th:src="@{static/bs/js/jquery.easing.min.js}"></script>
+    <script src="../../static/bs/js/scrolling-nav.js" th:src="@{static/bs/js/scrolling-nav.js}"></script>
+</div>

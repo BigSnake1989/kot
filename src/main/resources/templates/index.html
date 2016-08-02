@@ -1,14 +1,19 @@
 <!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <title>Good Thymes Virtual Grocery</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-</head>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="templates/fragments/header.html::head(title='Index')"></head>
 
 <body>
 
-<p th:text="${context.get('welcome')}">Welcome to our grocery store!</p>
+<nav th:replace="templates/fragments/header.html::nav">nav</nav>
 
+<!-- Page Content -->
+<section id="intro" class="intro-section">
+    <div class="container">
+        <p th:text="${context.get('welcome')}">Welcome to our grocery store!</p>
+    </div>
+</section>
+
+<div th:replace="templates/fragments/footer.html::footer"></div>
+<div th:include="templates/fragments/footer.html::script"></div>
 </body>
-
 </html>

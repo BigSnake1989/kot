@@ -10,6 +10,7 @@ import org.thymeleaf.templatemode.TemplateMode
  * Created by wl on 16/7/26.
  *
  */
+
 fun renderPage(r: Router) {
     val engine = ThymeleafTemplateEngine.create().setMode(TemplateMode.HTML)
     r.route("/static/*").handler(StaticHandler.create("static").setCachingEnabled(false))
