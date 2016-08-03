@@ -28,6 +28,7 @@ fun buildInsertSql(obj: Any): String {
         field.isAccessible = true
         prefix += formatFieldName(field.name)+ ","
     }
+    prefix = prefix.substring(0,prefix.length -1) + ")"
     return prefix
 }
 
