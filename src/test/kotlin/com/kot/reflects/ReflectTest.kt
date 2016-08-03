@@ -14,6 +14,30 @@ fun main(args: Array<String>) {
     var fields = modelClass.declaredFields
     for (field in fields) {
         field.isAccessible = true
-        println("Field Name:" + field.name + " \t\t Field Type: " + field.annotatedType.type.typeName + " \t Field Value:" + field.get(model) )
+        println("Field Name:" + field.name + " \t\t Field Type: " + field.annotatedType.type.typeName + " \t Field Value:" + field.get(model))
     }
+    println("Final:"+ buildInsertSql(model))
+}
+
+fun buildInsertSql(obj: Any): String {
+    var clz = obj.javaClass
+    var tbName = clz.simpleName
+    var prefix = "INSERT INTO $tbName("
+    var fields = clz.declaredFields
+    for (field in fields) {
+        field.isAccessible = true
+        prefix += formatFieldName(field.name)+ ","
+    }
+    return prefix
+}
+
+fun formatFieldName(name: String): String {
+    var result = StringBuilder()
+    for (char in name){
+        if (char.equals(char.toUpperCase())){
+            result.append("_")
+        }
+        result.append(char.toLowerCase())
+    }
+    return result.toString()
 }
