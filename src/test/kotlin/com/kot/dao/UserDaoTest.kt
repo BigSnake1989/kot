@@ -1,4 +1,4 @@
-package com.kot
+package com.kot.dao
 
 import com.kot.bean.User
 import com.kot.dao.interfaces.IUserDao
@@ -21,10 +21,10 @@ class UserDaoTest {
 
 
     @Test
-    fun testUserAdd(ctx:TestContext){
+    fun testUserAdd(ctx: TestContext){
         val async = ctx.async()
         val userService = UserDao(client)
-        val user = User("wang","hahaha")
+        val user = User("wang", "hahaha")
         val future = userService.addUser(user)
         future.setHandler {
             ctx.assertTrue(it.succeeded(),"增加user失败")

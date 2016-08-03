@@ -19,6 +19,8 @@ fun renderPage(r: Router) {
 
 fun index(c: RoutingContext, engine: ThymeleafTemplateEngine) {
     c.put("welcome", "hello world,page !!")
+    var list = arrayListOf("hehe","haha")
+    c.put("lists",list)
     response(c, engine, "templates/home/index.html")
 }
 

@@ -9,12 +9,16 @@
 <!-- Page Content -->
 <section id="intro" class="intro-section">
     <div class="container">
-        <p th:text="${context.get('welcome')}">Welcome to our grocery store!</p>
+        <!--/*@thymesVar id="welcome" type="java.lang.String"*/-->
+        <p th:text="${welcome}">Welcome to our grocery store!</p>
     </div>
 </section>
 <section id="test" class="intro-section">
     <div class="container">
-        <p th:text="${context.get('welcome')}">Welcome to our grocery store!</p>
+        <!--/*@thymesVar id="lists" type="java.util.List"*/-->
+        <div th:each="data : ${lists}">
+            <div th:text="${data}">haha</div>
+        </div>
     </div>
 </section>
 
