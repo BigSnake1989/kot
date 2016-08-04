@@ -1,4 +1,4 @@
-package com.kot.reflects
+package com.kot.common.db
 
 import com.kot.common.formatDate
 import io.netty.util.internal.StringUtil
@@ -23,12 +23,13 @@ fun main(args: Array<String>) {
     println("Final Insert SQL :" + buildInsertSql(model))
 
     val map = HashMap<String, Any>()
-    map.put("id", "vsdfsd")
+    map.put("id", "myId")
     map.put("name", Date())
     map.put("age", 20)
     val sql = "id = #{id} and name = #{name} and age=#{age}"
-    println("Final Update SQL :" + buildUpdateSql(model,sql,map))
-
+    println("Final Update SQL :" + buildUpdateSql(model, sql, map))
+    println("Final Delete SQL :" + buildDeleteSql(model, sql, map))
+    println("Final Query  SQL :" + buildQuerySql(model, sql, map))
 }
 
 fun buildInsertSql(obj: Any): String {
@@ -59,11 +60,32 @@ fun buildUpdateSql(obj: Any, sql: String, map: HashMap<String, Any>): String {
         val fieldValue = getFieldValueStr(field, obj)
         prefix += "$fieldName=$fieldValue,"
     }
-    val where = getWhereStr(sql,map)
+    val where = getWhereStr(sql, map)
     return prefix.substring(0, prefix.length - 1) + where
 }
 
-fun getWhereStr(sql: String, paraMap: HashMap<String, Any>): String {
+fun buildDeleteSql(obj: Any, sql: String, map: HashMap<String, Any>): String {
+    val tbName = obj.javaClass.simpleName
+    val prefix = "delete from $tbName "
+    val where = getWhereStr(sql, map)
+    return prefix + where
+}
+
+fun buildQuerySql(obj: Any, sql: String, map: HashMap<String, Any>): String {
+    val fields = obj.javaClass.declaredFields
+    val tbName = obj.javaClass.simpleName
+    var prefix = "select "
+    for (field in fields) {
+        field.isAccessible = true
+        val fieldName = convertFieldName(field.name)
+        prefix += " $fieldName as ${field.name},"
+    }
+    prefix = prefix.substring(0, prefix.length - 1) + " from $tbName"
+    val where = getWhereStr(sql, map)
+    return prefix + where
+}
+
+private fun getWhereStr(sql: String, paraMap: HashMap<String, Any>): String {
     if (StringUtil.isNullOrEmpty(sql)) {
         return ""
     }
@@ -73,7 +95,6 @@ fun getWhereStr(sql: String, paraMap: HashMap<String, Any>): String {
 
     while (matcher.find()) {
         val key = matcher.group(1)
-        println("regex result:" + key)
         val mapValue = paraMap[key]
         var fieldValue = ""
         when (mapValue) {
@@ -87,12 +108,11 @@ fun getWhereStr(sql: String, paraMap: HashMap<String, Any>): String {
         matcher.appendReplacement(sb, "$fieldValue")
     }
     matcher.appendTail(sb)
-    println(sb.toString())
     return " where " + sb.toString()
 }
 
 // convert field name to Camel style
-fun convertFieldName(name: String): String {
+private fun convertFieldName(name: String): String {
     val result = StringBuilder()
     for (char in name) {
         if (char.equals(char.toUpperCase())) {
@@ -104,7 +124,7 @@ fun convertFieldName(name: String): String {
 }
 
 // get field value according of it's type
-fun getFieldValueStr(field: Field, obj: Any): String {
+private fun getFieldValueStr(field: Field, obj: Any): String {
     val type = field.annotatedType.type.typeName
     val value = field.get(obj)
     var result = ""
