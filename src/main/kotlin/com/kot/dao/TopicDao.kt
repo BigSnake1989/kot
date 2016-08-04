@@ -1,7 +1,7 @@
 package com.kot.dao
 
 import com.kot.bean.Topic
-import com.kot.common.update
+import com.kot.common.db.update
 import com.kot.dao.interfaces.ITopicDao
 import io.vertx.core.Future
 import io.vertx.ext.jdbc.JDBCClient

@@ -1,4 +1,4 @@
-package com.kot.common
+package com.kot.common.db
 
 import io.vertx.core.Future
 import io.vertx.core.json.JsonArray
@@ -11,7 +11,7 @@ import io.vertx.ext.sql.SQLConnection
  */
 
 //get connection
-fun JDBCClient.withConnection(res: (SQLConnection) -> Future<Unit>):Future<Unit>{
+fun JDBCClient.withConnection(res: (SQLConnection) -> Future<Unit>): Future<Unit> {
     val finished = Future.future<Unit>()
     getConnection {
         if (it.succeeded()){
@@ -29,7 +29,7 @@ fun JDBCClient.withConnection(res: (SQLConnection) -> Future<Unit>):Future<Unit>
     return finished
 }
 
-fun <T> JDBCClient.query(query:String,params:List<Any>,rsHandler:(ResultSet) -> List<T>):Future<List<T>>{
+fun <T> JDBCClient.query(query:String, params:List<Any>, rsHandler:(ResultSet) -> List<T>): Future<List<T>> {
     val future = Future.future<List<T>>()
     withConnection {
         val finished = Future.future<Unit>()
@@ -52,7 +52,7 @@ fun <T> JDBCClient.query(query:String,params:List<Any>,rsHandler:(ResultSet) -> 
     return future
 }
 
-fun <T> JDBCClient.queryOne(query: String, params: List<Any>, rsHandler: (ResultSet) -> T):Future<T>{
+fun <T> JDBCClient.queryOne(query: String, params: List<Any>, rsHandler: (ResultSet) -> T): Future<T> {
     val future = Future.future<T>()
     withConnection {
         val finished = Future.future<Unit>()
@@ -77,7 +77,7 @@ fun <T> JDBCClient.queryOne(query: String, params: List<Any>, rsHandler: (Result
     return future
 }
 
-fun JDBCClient.update(query: String,params: List<Any>):Future<Unit>{
+fun JDBCClient.update(query: String, params: List<Any>): Future<Unit> {
     val future = withConnection {
         val finished = Future.future<Unit>()
         it.updateWithParams(query, JsonArray(params),{
@@ -93,7 +93,7 @@ fun JDBCClient.update(query: String,params: List<Any>):Future<Unit>{
     return future
 }
 
-fun JDBCClient.execute(query: String):Future<Unit>{
+fun JDBCClient.execute(query: String): Future<Unit> {
     val future = withConnection {
         val finished = Future.future<Unit>()
         it.execute(query,{
