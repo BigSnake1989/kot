@@ -29,7 +29,7 @@ fun JDBCClient.withConnection(res: (SQLConnection) -> Future<Unit>): Future<Unit
     return finished
 }
 
-fun <T> JDBCClient.query(query: String, params: List<Any>, rsHandler: (ResultSet) -> List<T>): Future<List<T>> {
+fun <T> JDBCClient.queryList(query: String, params: List<Any>, rsHandler: (ResultSet) -> List<T>): Future<List<T>> {
     val future = Future.future<List<T>>()
     withConnection {
         val finished = Future.future<Unit>()
@@ -52,7 +52,7 @@ fun <T> JDBCClient.query(query: String, params: List<Any>, rsHandler: (ResultSet
     return future
 }
 
-fun <T> JDBCClient.queryOne(query: String, params: List<Any>, rsHandler: (ResultSet) -> T): Future<T> {
+fun <T> JDBCClient.query(query: String, params: List<Any>, rsHandler: (ResultSet) -> T): Future<T> {
     val future = Future.future<T>()
     println("begin client query one")
     withConnection {
