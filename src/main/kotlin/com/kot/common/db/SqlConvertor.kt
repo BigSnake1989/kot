@@ -82,8 +82,6 @@ fun buildDeleteSql(obj: Any, sql: String, map: HashMap<String, Any>): String {
 }
 
 fun <T> buildQuerySql(obj: Class<T>, sql: String, map: HashMap<String, Any>): String {
-//    val fields = obj.javaClass.declaredFields
-//    val tbName = obj.javaClass.simpleName
     val fields = obj.declaredFields
     val tbName = obj.simpleName
     var prefix = "select "

@@ -29,13 +29,14 @@ class UserDaoTest {
     @Test
     fun testDbHelper(ctx: TestContext){
         val async = ctx.async()
-        val sql = "id=#{id}"
+        val sql = "avatar=#{id}"
         val para = HashMap<String,Any>()
-        para.put("id",1)
+        para.put("id","hehe")
         val userFuture = DbHelper.queryOne(client,User::class.java,sql,para)
         println("get user future:"+userFuture.toString())
         userFuture.setHandler {
             if (it.succeeded()){
+                println("user:" + it.result())
                 println("user id:"+it.result().id)
                 println("user name:" + it.result().name)
             }else{
@@ -43,16 +44,15 @@ class UserDaoTest {
             }
             async.complete()
         }
-
     }
 
     @Test
     fun testUserAdd(ctx: TestContext){
         val async = ctx.async()
         val userService = UserDao(client)
-        val user = User()
-        user.id = "wang"
-        user.name = "lei"
+        val user = User("wang","lei")
+//        user.id = "wang"
+//        user.name = "lei"
         val future = userService.addUser(user)
         future.setHandler {
             ctx.assertTrue(it.succeeded(),"增加user失败")

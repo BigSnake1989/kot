@@ -5,10 +5,10 @@ import java.util.*
 /**
  * Created by wl on 16/7/30.
  */
-class User() {
-    lateinit var id: String
-    lateinit var name: String
-}
+data class User(
+        var id: String = "",
+        var name: String = "",
+        var avatar: String = "")
 
 data class Topic(
         var id: Long,
