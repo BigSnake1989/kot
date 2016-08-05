@@ -1,6 +1,7 @@
 package com.kot.dao
 
 import com.kot.bean.User
+import com.kot.common.db.DbHelper
 import com.kot.dao.interfaces.IUserDao
 import com.kot.dao.UserDao
 import io.vertx.core.Vertx
@@ -11,6 +12,7 @@ import io.vertx.ext.unit.TestContext
 import io.vertx.ext.unit.junit.VertxUnitRunner
 import org.junit.Test
 import org.junit.runner.RunWith
+import java.util.*
 
 /**
  * Created by wl on 16/7/30.
@@ -19,12 +21,38 @@ import org.junit.runner.RunWith
 @RunWith(VertxUnitRunner::class)
 class UserDaoTest {
 
+    @Test
+    fun testClass(){
+        val clz = User::class.java
+    }
+
+    @Test
+    fun testDbHelper(ctx: TestContext){
+        val async = ctx.async()
+        val sql = "id=#{id}"
+        val para = HashMap<String,Any>()
+        para.put("id",1)
+        val userFuture = DbHelper.queryOne(client,User::class.java,sql,para)
+        println("get user future:"+userFuture.toString())
+        userFuture.setHandler {
+            if (it.succeeded()){
+                println("user id:"+it.result().id)
+                println("user name:" + it.result().name)
+            }else{
+                print("Get User Error")
+            }
+            async.complete()
+        }
+
+    }
 
     @Test
     fun testUserAdd(ctx: TestContext){
         val async = ctx.async()
         val userService = UserDao(client)
-        val user = User("wang", "hahaha")
+        val user = User()
+        user.id = "wang"
+        user.name = "lei"
         val future = userService.addUser(user)
         future.setHandler {
             ctx.assertTrue(it.succeeded(),"增加user失败")

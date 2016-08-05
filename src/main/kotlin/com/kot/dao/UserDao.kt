@@ -15,7 +15,7 @@ class UserDao(val client: JDBCClient) : IUserDao {
 
     override fun getUser(id: String): Future<User> {
         return client.queryOne("select id,name from user where id=?", listOf(id)) {
-            it.results.map { User(it.getString(0),it.getString(1)) }.first()
+            it.results.map { User() }.first()
         }
     }
 

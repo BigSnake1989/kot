@@ -14,7 +14,7 @@ import io.vertx.ext.sql.SQLConnection
 fun JDBCClient.withConnection(res: (SQLConnection) -> Future<Unit>): Future<Unit> {
     val finished = Future.future<Unit>()
     getConnection {
-        if (it.succeeded()){
+        if (it.succeeded()) {
             val connection = it.result()
             val done = res(connection)
             done.setHandler {
@@ -22,28 +22,28 @@ fun JDBCClient.withConnection(res: (SQLConnection) -> Future<Unit>): Future<Unit
                 if (it.succeeded()) finished.complete()
                 else finished.fail(it.cause())
             }
-        }else{
+        } else {
             finished.fail(it.cause())
         }
     }
     return finished
 }
 
-fun <T> JDBCClient.query(query:String, params:List<Any>, rsHandler:(ResultSet) -> List<T>): Future<List<T>> {
+fun <T> JDBCClient.query(query: String, params: List<Any>, rsHandler: (ResultSet) -> List<T>): Future<List<T>> {
     val future = Future.future<List<T>>()
     withConnection {
         val finished = Future.future<Unit>()
-        it.queryWithParams(query, JsonArray(params),{
-            if (it.succeeded()){
+        it.queryWithParams(query, JsonArray(params), {
+            if (it.succeeded()) {
                 try {
                     val result = rsHandler(it.result())
                     future.complete(result)
-                }catch (t:Throwable){
+                } catch (t: Throwable) {
                     future.fail(t)
-                }finally {
+                } finally {
                     finished.complete()
                 }
-            }else{
+            } else {
                 finished.fail(it.cause())
             }
         })
@@ -54,20 +54,23 @@ fun <T> JDBCClient.query(query:String, params:List<Any>, rsHandler:(ResultSet) -
 
 fun <T> JDBCClient.queryOne(query: String, params: List<Any>, rsHandler: (ResultSet) -> T): Future<T> {
     val future = Future.future<T>()
+    println("begin client query one")
     withConnection {
         val finished = Future.future<Unit>()
-        it.queryWithParams(query, JsonArray(params),{
-            if (it.succeeded()){
+        it.queryWithParams(query, JsonArray(params), {
+            if (it.succeeded()) {
                 try {
                     val result = rsHandler(it.result())
                     println("query one => $result")
                     future.complete(result)
-                }catch (t:Throwable){
+                } catch (t: Throwable) {
+                    println("error:" + t.message)
+                    t.printStackTrace()
                     future.fail(t)
-                }finally {
+                } finally {
                     finished.complete()
                 }
-            }else{
+            } else {
                 it.cause().printStackTrace()
                 finished.fail(it.cause())
             }
@@ -80,11 +83,11 @@ fun <T> JDBCClient.queryOne(query: String, params: List<Any>, rsHandler: (Result
 fun JDBCClient.update(query: String, params: List<Any>): Future<Unit> {
     val future = withConnection {
         val finished = Future.future<Unit>()
-        it.updateWithParams(query, JsonArray(params),{
-            if (it.succeeded()){
+        it.updateWithParams(query, JsonArray(params), {
+            if (it.succeeded()) {
                 finished.complete()
-            }else{
-                println("error:"+it.cause())
+            } else {
+                println("error:" + it.cause())
                 finished.fail(it.cause())
             }
         })
@@ -96,10 +99,10 @@ fun JDBCClient.update(query: String, params: List<Any>): Future<Unit> {
 fun JDBCClient.execute(query: String): Future<Unit> {
     val future = withConnection {
         val finished = Future.future<Unit>()
-        it.execute(query,{
-            if (it.succeeded()){
+        it.execute(query, {
+            if (it.succeeded()) {
                 finished.complete()
-            }else{
+            } else {
                 finished.fail(it.cause())
             }
         })

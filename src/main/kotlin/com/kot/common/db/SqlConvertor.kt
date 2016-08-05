@@ -10,10 +10,19 @@ import java.util.regex.Pattern
  * Created by wl on 16/8/3.
  */
 
-data class Model(var uName: String, var updateDate: Date, var minAge: Int, var maxAge: Long)
+ class Model(){
+    lateinit var uName: String
+    lateinit var updateDate: Date
+    lateinit var minAge: Integer
+    lateinit var maxAge: Integer
+}
 
 fun main(args: Array<String>) {
-    var model = Model("张三", Date(), 20, 40)
+    var model = Model()
+    model.uName = "wang"
+    model.updateDate = Date()
+    model.minAge = Integer(10)
+    model.maxAge = Integer(20)
     var modelClass = model.javaClass
     var fields = modelClass.declaredFields
     for (field in fields) {
@@ -22,6 +31,7 @@ fun main(args: Array<String>) {
     }
     println("Final Insert SQL :" + buildInsertSql(model))
 
+    val clz = Model::class.java
     val map = HashMap<String, Any>()
     map.put("id", "myId")
     map.put("name", Date())
@@ -29,7 +39,7 @@ fun main(args: Array<String>) {
     val sql = "id = #{id} and name = #{name} and age=#{age}"
     println("Final Update SQL :" + buildUpdateSql(model, sql, map))
     println("Final Delete SQL :" + buildDeleteSql(model, sql, map))
-    println("Final Query  SQL :" + buildQuerySql(model, sql, map))
+    println("Final Query  SQL :" + buildQuerySql(clz, sql, map))
 }
 
 fun buildInsertSql(obj: Any): String {
@@ -71,9 +81,11 @@ fun buildDeleteSql(obj: Any, sql: String, map: HashMap<String, Any>): String {
     return prefix + where
 }
 
-fun buildQuerySql(obj: Any, sql: String, map: HashMap<String, Any>): String {
-    val fields = obj.javaClass.declaredFields
-    val tbName = obj.javaClass.simpleName
+fun <T> buildQuerySql(obj: Class<T>, sql: String, map: HashMap<String, Any>): String {
+//    val fields = obj.javaClass.declaredFields
+//    val tbName = obj.javaClass.simpleName
+    val fields = obj.declaredFields
+    val tbName = obj.simpleName
     var prefix = "select "
     for (field in fields) {
         field.isAccessible = true

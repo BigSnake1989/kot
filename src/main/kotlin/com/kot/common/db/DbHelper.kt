@@ -9,15 +9,19 @@ import java.util.*
  */
 class DbHelper {
     companion object {
-        fun queryOne(client: JDBCClient, model: Any, sql: String, para: HashMap<String, Any>): Future<Any> {
-            var future = Future.future<Any>()
-            val querySql = buildQuerySql(model!!, sql, para)
-            client.queryOne(querySql, listOf(), { resultSet ->
-                genObj(resultSet, model.javaClass)
-                future.complete(model)
-            })
+        fun <T> queryOne(client: JDBCClient, model: Class<T>, sql: String, para: HashMap<String, Any>): Future<T> {
+            println("begin query one")
+            val future = Future.future<T>()
+            val querySql = buildQuerySql(model, sql, para)
+            println("sql :" + querySql)
+            client.queryOne(querySql, listOf()) {
+                println("client query over")
+                val finished = Future.future<Unit>()
+                future.complete(createInstance(it, model))
+                println("get final obj")
+                finished
+            }
             return future
         }
-
     }
 }
