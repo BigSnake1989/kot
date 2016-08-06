@@ -15,12 +15,22 @@ class DbHelper {
             val future = Future.future<T>()
             val querySql = buildQuerySql(clz, sql, para)
             println("sql :" + querySql)
-            client.query(querySql, listOf())
-            {
+            client.query(querySql, listOf()) {
                 println("client query over")
                 val finished = Future.future<Unit>()
                 future.complete(createInstance(it, clz))
                 println("get final obj")
+                finished
+            }
+            return future
+        }
+
+        fun <T> queryList(client: JDBCClient,clz:Class<T>,sql: String,para: HashMap<String, Any>):Future<List<T>>{
+            val future = Future.future<List<T>>()
+            val querySql = buildQuerySql(clz,sql,para)
+            client.query(querySql, listOf()){
+                val finished = Future.future<Unit>()
+                future.complete(createMultiInstance(it,clz))
                 finished
             }
             return future
@@ -34,12 +44,6 @@ class DbHelper {
 //            }
 //            return future
 //        }
-
-
-
     }
 
-    fun <T> getResult(hanlder:(ResultSet) -> List<T> ):List<T>{
-        return listOf()
-    }
 }

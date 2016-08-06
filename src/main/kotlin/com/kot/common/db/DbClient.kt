@@ -61,7 +61,6 @@ fun <T> JDBCClient.query(query: String, params: List<Any>, rsHandler: (ResultSet
             if (it.succeeded()) {
                 try {
                     val result = rsHandler(it.result())
-                    println("query one => $result")
                     future.complete(result)
                 } catch (t: Throwable) {
                     println("error:" + t.message)

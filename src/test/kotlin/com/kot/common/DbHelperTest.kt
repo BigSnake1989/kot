@@ -37,6 +37,19 @@ class DbHelperTest {
 
     @Test
     fun test_query_list(ctx: TestContext){
-
+        val async = ctx.async()
+        val sql = "avatar=#{id}"
+        val para = HashMap<String, Any>()
+        para.put("id", "hehe")
+        val userFuture = DbHelper.queryList(UserDaoTest.client, User::class.java, sql, para)
+        println("get user future:" + userFuture.toString())
+        userFuture.setHandler {
+            if (it.succeeded()) {
+                println("user list:" + it.result())
+            } else {
+                print("Get User Error")
+            }
+            async.complete()
+        }
     }
 }
