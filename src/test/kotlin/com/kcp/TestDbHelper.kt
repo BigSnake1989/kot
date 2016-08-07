@@ -2,12 +2,17 @@ package com.kcp
 
 import com.kot.bean.User
 import org.junit.Test
+import org.slf4j.LoggerFactory
 import java.util.*
 
 /**
  * Created by wl on 16/8/7.
  */
 class TestDbHelper {
+
+    companion object{
+        val logger = LoggerFactory.getLogger(TestDbHelper::class.java)
+    }
 
     @Test
     fun testInsert(){
@@ -24,7 +29,7 @@ class TestDbHelper {
         val para = HashMap<String, Any>()
         para.put("avatar", "meiqiu")
         val user = DbHelper.queryOne(clz, where, para)
-        println("final user:" + user.toString())
+        logger.info("final user:" + user.toString())
     }
 
     @Test
