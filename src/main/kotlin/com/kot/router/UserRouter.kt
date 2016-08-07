@@ -1,6 +1,6 @@
 package com.kot.router
 
-import com.kot.common.text
+import com.common.text
 import io.vertx.ext.web.Router
 
 /**

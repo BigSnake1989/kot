@@ -1,6 +1,6 @@
-package com.kot.common.db
+package com.kcp
 
-import com.kot.common.formatDate
+import com.common.formatDate
 import io.netty.util.internal.StringUtil
 import java.lang.reflect.Field
 import java.util.*

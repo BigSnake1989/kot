@@ -1,4 +1,4 @@
-package com.kot.common.db
+package com.kcp
 
 import io.vertx.core.Future
 import io.vertx.core.json.JsonArray
@@ -19,8 +19,13 @@ fun JDBCClient.withConnection(res: (SQLConnection) -> Future<Unit>): Future<Unit
             val done = res(connection)
             done.setHandler {
                 connection.close()
-                if (it.succeeded()) finished.complete()
-                else finished.fail(it.cause())
+                if (it.succeeded()) {
+                    finished.complete()
+                }
+                else{
+                    it.cause().printStackTrace()
+                    finished.fail(it.cause())
+                }
             }
         } else {
             finished.fail(it.cause())
@@ -95,6 +100,24 @@ fun JDBCClient.update(query: String, params: List<Any>): Future<Unit> {
     return future
 }
 
+fun JDBCClient.executeSql(query: String, rsHandler: () -> Unit): Future<Unit> {
+    val future = Future.future<Unit>()
+    withConnection {
+        val finished = Future.future<Unit>()
+        it.execute(query, {
+            if (it.succeeded()) {
+                future.complete(rsHandler())
+                finished.complete()
+            } else {
+                it.cause().printStackTrace()
+                finished.fail(it.cause())
+            }
+        })
+        finished
+    }
+    return future
+}
+
 fun JDBCClient.execute(query: String): Future<Unit> {
     val future = withConnection {
         val finished = Future.future<Unit>()
@@ -102,7 +125,47 @@ fun JDBCClient.execute(query: String): Future<Unit> {
             if (it.succeeded()) {
                 finished.complete()
             } else {
+                it.cause().printStackTrace()
                 finished.fail(it.cause())
+            }
+        })
+        finished
+    }
+    return future
+}
+
+fun JDBCClient.insert(query: String): Future<Long> {
+    val future = Future.future<Long>()
+    withConnection {
+        val finished = Future.future<Unit>()
+        it.execute(query) {
+            if (it.succeeded()) {
+                queryLastID {
+                    future.complete(it)
+                    finished.complete()
+                }
+            } else {
+                it.cause().printStackTrace()
+                finished.fail(it.cause())
+            }
+        }
+        finished
+    }
+    return future
+}
+
+fun JDBCClient.queryLastID(rsHandler: (Long) -> Unit): Future<Long> {
+    val future = Future.future<Long>()
+    val sql = "SELECT LAST_INSERT_ID()"
+    withConnection {
+        val finished = Future.future<Unit>()
+        it.query(sql, {
+            if (it.succeeded()) {
+                println("query last:" + it.result())
+                rsHandler(100000)
+                finished.complete()
+            } else {
+                it.cause().printStackTrace()
             }
         })
         finished

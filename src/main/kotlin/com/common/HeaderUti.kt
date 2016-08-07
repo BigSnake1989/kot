@@ -1,4 +1,4 @@
-package com.kot.common
+package com.common
 
 import io.vertx.core.http.HttpServerResponse
 

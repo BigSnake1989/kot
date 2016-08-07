@@ -1,8 +1,8 @@
 package com.kot.router
 
 import com.kot.bean.Entity
-import com.kot.common.html
-import com.kot.common.json
+import com.common.html
+import com.common.json
 import io.vertx.core.Vertx
 import io.vertx.core.json.Json
 import io.vertx.ext.web.Router

@@ -1,7 +1,7 @@
 package com.kot.dao
 
 import com.kot.bean.User
-import com.kot.common.db.DbHelper
+import com.kcp.DbHelper
 import com.kot.dao.interfaces.IUserDao
 import com.kot.dao.UserDao
 import io.vertx.core.Vertx
@@ -22,55 +22,50 @@ import java.util.*
 class UserDaoTest {
 
     @Test
-    fun testClass(){
+    fun testClass() {
         val clz = User::class.java
-    }
-
-    @Test
-    fun testDbHelper(ctx: TestContext){
-        val async = ctx.async()
         val sql = "avatar=#{id}"
-        val para = HashMap<String,Any>()
-        para.put("id","hehe")
-        val userFuture = DbHelper.queryOne(client,User::class.java,sql,para)
-        println("get user future:"+userFuture.toString())
-        userFuture.setHandler {
-            if (it.succeeded()){
-                println("user:" + it.result())
-                println("user id:"+it.result().id)
-                println("user name:" + it.result().name)
-            }else{
-                print("Get User Error")
-            }
-            async.complete()
-        }
+        val para = HashMap<String, Any>()
+        para.put("id", "hehe")
+        val user = DbHelper.queryOne(clz, sql, para)
+        println("final user:" + user.toString())
     }
 
     @Test
-    fun testUserAdd(ctx: TestContext){
+    fun testMuli(){
+        val sql = "avatar=#{id}"
+        val para = HashMap<String, Any>()
+        para.put("id", "hehe")
+        val user = DbHelper.queryList(User::class.java, sql, para)
+        println("final user:" + user.toString())
+    }
+
+
+    @Test
+    fun testUserAdd(ctx: TestContext) {
         val async = ctx.async()
         val userService = UserDao(client)
-        val user = User("wang","lei")
+        val user = User("wang", "lei")
 //        user.id = "wang"
 //        user.name = "lei"
         val future = userService.addUser(user)
         future.setHandler {
-            ctx.assertTrue(it.succeeded(),"增加user失败")
+            ctx.assertTrue(it.succeeded(), "增加user失败")
             async.complete()
         }
     }
 
     @Test
-    fun testUserQuery(ctx: TestContext){
+    fun testUserQuery(ctx: TestContext) {
         val async = ctx.async()
         val userService = UserDao(client)
         val userFuture = userService.getUser("wang")
         userFuture.setHandler {
-            if (it.succeeded()){
+            if (it.succeeded()) {
                 val user = it.result()
-                println("user info:"+user.toString())
-                ctx.assertNotNull(user,"查询失败")
-            }else{
+                println("user info:" + user.toString())
+                ctx.assertNotNull(user, "查询失败")
+            } else {
                 print("--------- ERROR ---------")
             }
             async.complete()
@@ -78,19 +73,19 @@ class UserDaoTest {
     }
 
     @Test
-    fun testUserRm(ctx: TestContext){
+    fun testUserRm(ctx: TestContext) {
         val async = ctx.async()
         val userService = UserDao(client)
         val future = userService.rmUser("wang")
         future.setHandler {
-            ctx.assertTrue(it.succeeded(),"删除失败")
+            ctx.assertTrue(it.succeeded(), "删除失败")
             async.complete()
         }
     }
 
     companion object {
         val client = JDBCClient.createShared(Vertx.vertx(), JsonObject()
-                .put("provider_class","io.vertx.ext.jdbc.spi.impl.HikariCPDataSourceProvider")
+                .put("provider_class", "io.vertx.ext.jdbc.spi.impl.HikariCPDataSourceProvider")
                 .put("jdbcUrl", "jdbc:mysql://localhost:3306/kot?useSSL=false")
                 .put("driver_class", "com.mysql.jdbc.Driver")
                 .put("username", "root")

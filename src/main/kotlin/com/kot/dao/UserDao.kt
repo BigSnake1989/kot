@@ -1,9 +1,9 @@
 package com.kot.dao
 
 import com.kot.bean.User
-import com.kot.common.db.execute
-import com.kot.common.db.query
-import com.kot.common.db.update
+import com.kcp.execute
+import com.kcp.query
+import com.kcp.update
 import com.kot.dao.interfaces.IUserDao
 import io.vertx.core.Future
 import io.vertx.ext.jdbc.JDBCClient

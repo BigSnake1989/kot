@@ -1,4 +1,4 @@
-package com.kot.common
+package com.common
 
 import java.time.LocalDateTime
 import java.time.ZoneId
