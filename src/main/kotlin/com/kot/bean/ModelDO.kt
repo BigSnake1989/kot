@@ -6,7 +6,7 @@ import java.util.*
  * Created by wl on 16/7/30.
  */
 data class User(
-        var id: String = "",
+        var id: Int? = null,
         var name: String = "",
         var avatar: String = "")
 

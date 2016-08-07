@@ -1,8 +1,8 @@
 package com.kcp
 
 import com.common.formatDate
-import io.netty.util.internal.StringUtil
 import java.lang.reflect.Field
+import java.sql.SQLException
 import java.util.*
 import java.util.regex.Pattern
 
@@ -51,7 +51,10 @@ fun buildInsertSql(obj: Any): String {
     for (field in fields) {
         field.isAccessible = true
         val fieldName = convertFieldName(field.name)
-        val fieldValue = getFieldValueStr(field, obj)
+        var fieldValue = getFieldValueStr(field, obj)
+        if ("".equals(fieldValue)){
+            fieldValue = "null"
+        }
         prefix += "$fieldName,"
         valueStr += "$fieldValue,"
     }
@@ -60,7 +63,7 @@ fun buildInsertSql(obj: Any): String {
     return "$prefix) values($valueStr)"
 }
 
-fun buildUpdateSql(obj: Any, sql: String, map: HashMap<String, Any>): String {
+fun buildUpdateSql(obj: Any, sql: String?, map: HashMap<String, Any>?): String {
     val fields = obj.javaClass.declaredFields
     val tbName = obj.javaClass.simpleName
     var prefix = "update $tbName set "
@@ -74,14 +77,14 @@ fun buildUpdateSql(obj: Any, sql: String, map: HashMap<String, Any>): String {
     return prefix.substring(0, prefix.length - 1) + where
 }
 
-fun buildDeleteSql(obj: Any, sql: String, map: HashMap<String, Any>): String {
+fun buildDeleteSql(obj: Any, sql: String?, map: HashMap<String, Any>?): String {
     val tbName = obj.javaClass.simpleName
     val prefix = "delete from $tbName "
     val where = getWhereStr(sql, map)
     return prefix + where
 }
 
-fun <T> buildQuerySql(obj: Class<T>, sql: String, map: HashMap<String, Any>): String {
+fun <T> buildQuerySql(obj: Class<T>, sql: String?, map: HashMap<String, Any>?): String {
     val fields = obj.declaredFields
     val tbName = obj.simpleName
     var prefix = "select "
@@ -95,9 +98,12 @@ fun <T> buildQuerySql(obj: Class<T>, sql: String, map: HashMap<String, Any>): St
     return prefix + where
 }
 
-private fun getWhereStr(sql: String, paraMap: HashMap<String, Any>): String {
-    if (StringUtil.isNullOrEmpty(sql)) {
+private fun getWhereStr(sql: String?, paraMap: HashMap<String, Any>?): String {
+    if ("".equals(sql) || sql == null) {
         return ""
+    }
+    if (paraMap == null){
+        throw SQLException("Parameter Map Can Not Be Empty When Your Where Sql Is Not Empty")
     }
     val regex = "#\\{(.*?)}"
     val matcher = Pattern.compile(regex).matcher(sql)
@@ -141,8 +147,12 @@ private fun getFieldValueStr(field: Field, obj: Any): String {
     when (type) {
         "java.lang.String" ->
             result = "'$value'"
-        "int", "long" ->
-            result = value.toString()
+        "java.lang.Integer", "java.lang.Long" ->
+            if (value == null){
+                result = "null"
+            }else{
+                result = value.toString()
+            }
         "java.util.Date" ->
             result = " '" + formatDate(value) + "' "
     }

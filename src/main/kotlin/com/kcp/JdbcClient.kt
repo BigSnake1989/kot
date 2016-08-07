@@ -34,7 +34,6 @@ fun main(args: Array<String>) {
 
 class JdbcClient {
     companion object {
-
         fun insert(sql: String): Long {
             return withConnection {
                 val stmt = it.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)
