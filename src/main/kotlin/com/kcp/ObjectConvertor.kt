@@ -16,7 +16,6 @@ fun <T> createInstance(rs: ResultSet, clz: Class<T>): T? {
     var i = 1
     while (i <= columnCount) {
         val columnName = metaData.getColumnName(i)
-        println("column name:" + columnName)
         columnList.add(columnName)
         i += 1
     }
@@ -45,7 +44,6 @@ fun <T> createMultiInstance(rs: ResultSet, clz: Class<T>): List<T> {
     var i = 1
     while (i <= columnCount) {
         val columnName = metaData.getColumnName(i)
-        println("column name:" + columnName)
         columnList.add(columnName)
         i += 1
     }

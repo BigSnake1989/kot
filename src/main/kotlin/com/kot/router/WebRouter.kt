@@ -15,13 +15,18 @@ fun renderPage(r: Router) {
     r.route("/static/*").handler(StaticHandler.create("static").setCachingEnabled(false))
     r.get("/").handler({ c -> index(c, engine) })
     r.get("/index.html").handler({ c -> index(c, engine) })
+    r.get("/post.html").handler { post(it,engine) }
 }
 
 fun index(c: RoutingContext, engine: ThymeleafTemplateEngine) {
     c.put("welcome", "hello world,page !!")
-    var list = arrayListOf("hehe","haha")
+    val list = arrayListOf("hehe","haha")
     c.put("lists",list)
     response(c, engine, "templates/home/index.html")
+}
+
+fun post(c:RoutingContext,engine: ThymeleafTemplateEngine){
+    response(c,engine,"templates/post/post.html")
 }
 
 fun response(c: RoutingContext, engine: ThymeleafTemplateEngine, tpl: String) {

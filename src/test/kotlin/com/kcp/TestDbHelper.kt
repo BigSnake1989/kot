@@ -27,7 +27,7 @@ class TestDbHelper {
         val clz = User::class.java
         val where = "name=#{avatar}"
         val para = HashMap<String, Any>()
-        para.put("avatar", "meiqiu")
+        para.put("avatar", "suannai")
         val user = DbHelper.queryOne(clz, where, para)
         logger.info("final user:" + user.toString())
     }
