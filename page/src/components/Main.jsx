@@ -1,7 +1,7 @@
 import React,{ Component } from 'react';
 import MainLayout from '../layouts/MainLayout/MainLayout';
 
-class Main extends Component {
+class App extends Component {
     render(){
         return (
             <MainLayout>
@@ -12,4 +12,4 @@ class Main extends Component {
         )
     }
 }
-export default Main;
+export default App;

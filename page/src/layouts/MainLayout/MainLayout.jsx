@@ -6,16 +6,10 @@ const MainLayout = ({ children }) => {
   return (
     <div className={styles.normal}>
       <div className={styles.head}>
-        <h1>Kot App</h1>
+        <div className={styles.title}><h1>Kotin China</h1></div>
+        <Navi />
       </div>
       <div className={styles.content}>
-        <div className={styles.side}>
-          <h2>Filters:</h2>
-          <Link to="/">All</Link><br />
-          <Link to="/actived">Actived</Link><br />
-          <Link to="/completed">Completed</Link><br />
-          <Link to="/404">404</Link><br />
-        </div>
         <div className={styles.main}>
           {children}
         </div>
@@ -32,3 +26,14 @@ MainLayout.propTypes = {
 };
 
 export default MainLayout;
+
+class Navi extends Component{
+    render(){
+        return (
+            <div className={styles.navi}>
+                Home
+                | Discuss | Login | Register
+            </div>
+        )
+    }
+}
