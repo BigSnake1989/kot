@@ -6,11 +6,6 @@ class Home extends Component {
         return (
             <div className={styles.t}>
                 <table cellSpacing="0" cellPadding="0">
-                     <tbody>
-                        <tr className={styles.navi}>
-                            <td>Table ...</td>
-                        </tr>
-                    </tbody>
                     <tbody>
                         <tr className={styles.trdesc}>
                             <td style={{ width: 80 }}>分类</td>
@@ -28,9 +23,29 @@ class Home extends Component {
                         </tr>
                     </tbody>
                 </table>
+                <Pagination />
             </div>
         )
     }
 }
 
 export default Home;
+
+class Pagination extends Component {
+    render(){
+        return (
+            <div className={styles.page}>
+                <table cellSpacing="0" cellPadding="0">
+                    <tbody>
+                        <tr>
+                            <td>{'<'}</td>
+                            <td>上一页</td>
+                            <td>下一页</td>
+                            <td>{'>'}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        )
+    }
+}
